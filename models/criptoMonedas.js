@@ -1,10 +1,10 @@
 export default (sequelize, DataTypes) => {
   const CriptoMoneda = sequelize.define("CriptoMoneda", {
-    nombre: DataTypes.STRING,
-    codigo: DataTypes.STRING,
-    precio: DataTypes.FLOAT,
-    monedaId: DataTypes.INTEGER,
-    fechaActualizacion: DataTypes.DATE,
+    nombre: { type: DataTypes.STRING, allowNull: false, unique: true },
+    codigo: { type: DataTypes.STRING, allowNull: false, unique: true },
+    precio: { type: DataTypes.FLOAT, allowNull: false },
+    monedaId: { type: DataTypes.INTEGER, allowNull: false },
+    fechaActualizacion: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
   });
 
   CriptoMoneda.associate = (db) => {

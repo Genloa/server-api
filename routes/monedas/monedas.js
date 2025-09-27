@@ -1,4 +1,4 @@
-import e, { Router } from "express";
+import { Router } from "express";
 import db from "../../models/index.js";
 
 const router = Router();
