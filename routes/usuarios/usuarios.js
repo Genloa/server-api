@@ -13,7 +13,7 @@ router.get("/getUsuarios", async (req, res) => {
   }
 });
 
-router.post("/updateUsuario", async (req, res) => {
+router.put("/updateUsuario", async (req, res) => {
   try {
     const usuario = await Usuario.update(
       {
@@ -24,16 +24,26 @@ router.post("/updateUsuario", async (req, res) => {
       },
       { where: { cedula: req.body.cedula } }
     );
-    res.status(200).json(usuario);
+    if (!usuario) {
+      res.status(200).json({ message: "Usuario no encontrada" });
+    } else {
+      res.status(200).json({ message: "Usuario actualizada correctamente" });
+    }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-router.post("/deleteUsuario", async (req, res) => {
+router.delete("/deleteUsuario", async (req, res) => {
   try {
-    await Usuario.destroy({ where: { cedula: req.body.cedula } });
-    res.status(200).json({ result: true });
+    const Usuario = await Usuario.destroy({
+      where: { cedula: req.body.cedula },
+    });
+    if (!usuario) {
+      res.status(200).json({ message: "Usuario no encontrada" });
+    } else {
+      res.status(200).json({ message: "Usuario eliminado correctamente" });
+    }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -45,7 +55,11 @@ router.post("/auth/login", async (req, res) => {
       correo: req.body.correo,
       password: req.body.password,
     });
-    res.status(201).json({ result: true });
+    if (!usuario) {
+      res.status(200).json({ message: "Datos incorrectos" });
+    } else {
+      res.status(200).json({ message: "Datos Correctos" });
+    }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -60,7 +74,11 @@ router.post("/auth/register", async (req, res) => {
       correo: req.body.correo,
       password: req.body.password,
     });
-    res.status(201).json({ result: true });
+    if (!usuario) {
+      res.status(200).json({ message: "No se pudo crear Usuario" });
+    } else {
+      res.status(200).json({ message: "Usuario creado correctamente" });
+    }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
