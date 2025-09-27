@@ -1,5 +1,5 @@
-export async function up(queryInterface, Sequelize) {
-  await queryInterface.createTable("OperacionesCripto", {
+export default (sequelize, DataTypes) => {
+  const OperacionesCripto = sequelize.define("OperacionesCripto", {
     operacion: {
       type: DataTypes.ENUM("compra", "venta"),
       allowNull: false,
@@ -12,28 +12,26 @@ export async function up(queryInterface, Sequelize) {
       type: DataTypes.FLOAT,
       allowNull: false,
     },
-    fecha: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
-    usuarioId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: "Usuarios",
-        key: "id",
-      },
-      allowNull: false,
-    },
-    criptoMonedaId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: "CriptoMonedas",
-        key: "id",
-      },
-      allowNull: false,
+    fecha: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
     estado: {
       type: DataTypes.ENUM("pendiente", "completada", "cancelada"),
       defaultValue: "pendiente",
     },
-    createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
-    updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
   });
-}
+  OperacionesCripto.associate = (db) => {
+    OperacionesCripto.belongsTo(db.Usuario, {
+      foreignKey: "usuarioId",
+      as: "usuario",
+    });
+
+    OperacionesCripto.belongsTo(db.CriptoMoneda, {
+      foreignKey: "criptoMonedaId",
+      as: "criptoMoneda",
+    });
+  };
+
+  return OperacionesCripto;
+};

@@ -13,6 +13,11 @@ module.exports = {
       apellido: {
         type: Sequelize.STRING,
       },
+      cedula: {
+        type: Sequelize.STRING,
+        unique: true,
+        allowNull: false,
+      },
       correo: {
         type: Sequelize.STRING,
         unique: true,

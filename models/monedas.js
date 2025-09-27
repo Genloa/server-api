@@ -1,5 +1,5 @@
 export default (sequelize, DataTypes) => {
-  const Monedas = sequelize.define("Monedas", {
+  const Moneda = sequelize.define("Moneda", {
     nombre: { type: DataTypes.STRING, allowNull: false },
     codigo: { type: DataTypes.STRING, allowNull: false, unique: true },
     simbolo: { type: DataTypes.STRING, allowNull: false, unique: true },
@@ -7,5 +7,5 @@ export default (sequelize, DataTypes) => {
     createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
     updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
   });
-  return Monedas;
+  return Moneda;
 };

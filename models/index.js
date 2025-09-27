@@ -1,3 +1,4 @@
+// models/index.js
 import { Sequelize, DataTypes } from "sequelize";
 import configFile from "../config/config.js";
 import fs from "fs";
@@ -24,12 +25,20 @@ const loadModels = async () => {
   const files = fs
     .readdirSync(__dirname)
     .filter((file) => file !== basename && file.endsWith(".js"));
+
   for (const file of files) {
     const modulePath = pathToFileURL(path.join(__dirname, file)).href;
     const modelModule = await import(modulePath);
+
     const model = modelModule.default(sequelize, DataTypes);
-    db[model.name] = model;
+    db[model.name] = model; // ✅ usa el nombre del modelo, no del archivo
   }
+
+  Object.values(db).forEach((model) => {
+    if (model.associate) {
+      model.associate(db);
+    }
+  });
 };
 
 await loadModels();
