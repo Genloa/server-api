@@ -1,10 +1,10 @@
 import { Router } from "express";
 import db from "../../models/index.js";
-
+import { verificarToken } from "../../middlewares/verificarToken.js";
 const router = Router();
 const { Moneda } = db;
 
-router.post("/createMoneda", async (req, res) => {
+router.post("/createMoneda", verificarToken, async (req, res) => {
   try {
     const moneda = await Moneda.create({
       nombre: req.body.nombre,
@@ -21,7 +21,7 @@ router.post("/createMoneda", async (req, res) => {
   }
 });
 
-router.get("/getMonedas", async (req, res) => {
+router.get("/getMonedas", verificarToken, async (req, res) => {
   try {
     const Monedas = await Moneda.findAll();
     res.status(200).json(Monedas);
@@ -30,7 +30,7 @@ router.get("/getMonedas", async (req, res) => {
   }
 });
 
-router.put("/updateMoneda", async (req, res) => {
+router.put("/updateMoneda", verificarToken, async (req, res) => {
   try {
     const moneda = await Moneda.update(
       {
@@ -50,7 +50,7 @@ router.put("/updateMoneda", async (req, res) => {
   }
 });
 
-router.delete("/deleteMoneda", async (req, res) => {
+router.delete("/deleteMoneda", verificarToken, async (req, res) => {
   try {
     const moneda = await Moneda.destroy({ where: { codigo: req.body.codigo } });
     if (!moneda) {

@@ -1,11 +1,10 @@
 import { Router } from "express";
 import db from "../../models/index.js";
-import criptoMonedas from "../../models/criptoMonedas.js";
-
+import { verificarToken } from "../../middlewares/verificarToken.js";
 const router = Router();
 const { CriptoMoneda } = db;
 
-router.post("/createCriptoMoneda", async (req, res) => {
+router.post("/createCriptoMoneda", verificarToken, async (req, res) => {
   try {
     const criptoMoneda = await CriptoMoneda.create({
       nombre: req.body.nombre,
@@ -23,7 +22,7 @@ router.post("/createCriptoMoneda", async (req, res) => {
   }
 });
 
-router.get("/getCriptoMonedas", async (req, res) => {
+router.get("/getCriptoMonedas", verificarToken, async (req, res) => {
   try {
     const CriptoMonedas = await CriptoMoneda.findAll({
       include: [{ model: db.Moneda, as: "moneda" }],
@@ -34,31 +33,35 @@ router.get("/getCriptoMonedas", async (req, res) => {
   }
 });
 
-router.post("/getCriptoMonedasByCodigoMoneda", async (req, res) => {
-  try {
-    const criptoMonedas = await db.CriptoMoneda.findAll({
-      include: [
-        {
-          model: db.Moneda,
-          as: "moneda",
-          where: { codigo: req.body.codigo },
-        },
-      ],
-    });
+router.post(
+  "/getCriptoMonedasByCodigoMoneda",
+  verificarToken,
+  async (req, res) => {
+    try {
+      const criptoMonedas = await db.CriptoMoneda.findAll({
+        include: [
+          {
+            model: db.Moneda,
+            as: "moneda",
+            where: { codigo: req.body.codigo },
+          },
+        ],
+      });
 
-    if (criptoMonedas.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No se encontraron criptomonedas para esa moneda" });
+      if (criptoMonedas.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No se encontraron criptomonedas para esa moneda" });
+      }
+
+      res.status(200).json(criptoMonedas);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
     }
-
-    res.status(200).json(criptoMonedas);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
   }
-});
+);
 
-router.put("/updateCriptoMoneda", async (req, res) => {
+router.put("/updateCriptoMoneda", verificarToken, async (req, res) => {
   try {
     const criptoMoneda = await CriptoMoneda.update(
       {
@@ -81,7 +84,7 @@ router.put("/updateCriptoMoneda", async (req, res) => {
   }
 });
 
-router.delete("/deleteCriptoMoneda", async (req, res) => {
+router.delete("/deleteCriptoMoneda", verificarToken, async (req, res) => {
   try {
     const criptoMoneda = await CriptoMoneda.destroy({
       where: { codigo: req.body.codigo },

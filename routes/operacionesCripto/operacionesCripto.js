@@ -1,10 +1,11 @@
 import { Router } from "express";
 import db from "../../models/index.js";
+import { verificarToken } from "../../middlewares/verificarToken.js";
 
 const router = Router();
 const { OperacionesCripto } = db;
 
-router.post("/createOperacionCripto", async (req, res) => {
+router.post("/createOperacionCripto", verificarToken, async (req, res) => {
   try {
     const { usuarioId, criptoMonedaId, operacion, cantidad, estado } = req.body;
 
@@ -28,7 +29,7 @@ router.post("/createOperacionCripto", async (req, res) => {
   }
 });
 
-router.get("/getOperacionesCripto", async (req, res) => {
+router.get("/getOperacionesCripto", verificarToken, async (req, res) => {
   try {
     const operacionesCripto = await OperacionesCripto.findAll();
     res.status(200).json(operacionesCripto);
@@ -37,7 +38,7 @@ router.get("/getOperacionesCripto", async (req, res) => {
   }
 });
 
-router.put("/updateOperacionCripto", async (req, res) => {
+router.put("/updateOperacionCripto", verificarToken, async (req, res) => {
   try {
     const operacionCripto = await OperacionesCripto.update(
       {
@@ -55,7 +56,7 @@ router.put("/updateOperacionCripto", async (req, res) => {
   }
 });
 
-router.delete("/deleteOperacionCripto", async (req, res) => {
+router.delete("/deleteOperacionCripto", verificarToken, async (req, res) => {
   try {
     const operacionCripto = await OperacionesCripto.destroy({
       where: { id: req.body.id },
